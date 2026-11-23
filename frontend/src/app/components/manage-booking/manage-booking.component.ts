@@ -98,11 +98,11 @@ import { BookingResponse } from '../../core/models/hotel.model';
           <div class="demo-hints">
             <span class="hint-label">Sample Seed Bookings for Demo:</span>
             <div class="hint-chips">
-              <button class="hint-chip" (click)="fillDemo('TC-BK-100201', 'john.doe@thomascook.com')">
-                London: TC-BK-100201 (john.doe&#64;thomascook.com)
+              <button class="hint-chip" (click)="fillDemo('TC-BK-100201', 'rahul.sharma@mumbai.com')">
+                Mumbai: TC-BK-100201 (rahul.sharma&#64;mumbai.com)
               </button>
-              <button class="hint-chip" (click)="fillDemo('TC-BK-100202', 'emma.watson@paris.com')">
-                Paris: TC-BK-100202 (emma.watson&#64;paris.com)
+              <button class="hint-chip" (click)="fillDemo('TC-BK-100202', 'priya.verma@varanasi.com')">
+                Varanasi: TC-BK-100202 (priya.verma&#64;varanasi.com)
               </button>
             </div>
           </div>
@@ -173,11 +173,11 @@ import { BookingResponse } from '../../core/models/hotel.model';
               <div class="price-summary-box">
                 <div class="rate-line">
                   <span>Rate per night:</span>
-                  <span>\${{ booking.pricePerNight | number:'1.2-2' }}</span>
+                  <span>₹{{ booking.pricePerNight | number:'1.2-2' }}</span>
                 </div>
                 <div class="total-line">
                   <span>Total Amount:</span>
-                  <span class="total-val">\${{ booking.totalPrice | number:'1.2-2' }}</span>
+                  <span class="total-val">₹{{ booking.totalPrice | number:'1.2-2' }}</span>
                 </div>
               </div>
 

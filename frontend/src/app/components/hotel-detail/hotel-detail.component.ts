@@ -175,11 +175,11 @@ import { BookingModalComponent } from '../booking-modal/booking-modal.component'
                 <div class="room-price-stack">
                   <span class="rate-label">Per Night</span>
                   <div class="rate-val">
-                    <span class="currency">$</span>
+                    <span class="currency">₹</span>
                     <span class="amount">{{ room.pricePerNight | number:'1.0-0' }}</span>
                   </div>
                   <span class="stay-total-hint" *ngIf="totalNights > 1">
-                    \${{ (room.pricePerNight * totalNights) | number:'1.0-0' }} total for {{ totalNights }} nights
+                    ₹{{ (room.pricePerNight * totalNights) | number:'1.0-0' }} total for {{ totalNights }} nights
                   </span>
                 </div>
 

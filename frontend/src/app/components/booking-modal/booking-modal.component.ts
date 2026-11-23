@@ -58,7 +58,7 @@ import { BookingResponse, CreateBookingRequest, HotelDetail, Room } from '../../
             </div>
             <div class="detail-row total-highlight">
               <span class="label">Total Amount Paid:</span>
-              <span class="val">\${{ confirmedBooking.totalPrice | number:'1.2-2' }}</span>
+              <span class="val">₹{{ confirmedBooking.totalPrice | number:'1.2-2' }}</span>
             </div>
           </div>
 
@@ -95,16 +95,16 @@ import { BookingResponse, CreateBookingRequest, HotelDetail, Room } from '../../
           <!-- Price Calculation Box (Calculated on server, previewed live) -->
           <div class="price-breakdown">
             <div class="price-row">
-              <span>\${{ room.pricePerNight | number:'1.2-2' }} × {{ totalNights }} {{ totalNights === 1 ? 'night' : 'nights' }}</span>
-              <span>\${{ (room.pricePerNight * totalNights) | number:'1.2-2' }}</span>
+              <span>₹{{ room.pricePerNight | number:'1.2-2' }} × {{ totalNights }} {{ totalNights === 1 ? 'night' : 'nights' }}</span>
+              <span>₹{{ (room.pricePerNight * totalNights) | number:'1.2-2' }}</span>
             </div>
             <div class="price-row text-muted">
               <span>Taxes & Service Fees (Included)</span>
-              <span>$0.00</span>
+              <span>₹0.00</span>
             </div>
             <div class="price-row total-row">
               <span>Total Estimated Amount</span>
-              <span class="total-price">\${{ (room.pricePerNight * totalNights) | number:'1.2-2' }}</span>
+              <span class="total-price">₹{{ (room.pricePerNight * totalNights) | number:'1.2-2' }}</span>
             </div>
           </div>
 

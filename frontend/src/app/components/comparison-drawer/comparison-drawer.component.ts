@@ -27,7 +27,7 @@ import { ComparisonService } from '../../core/services/comparison.service';
             <img [src]="h.imageUrl" [alt]="h.name" class="chip-thumb">
             <div class="chip-text">
               <span class="chip-name">{{ h.name }}</span>
-              <span class="chip-price">\${{ h.startingPrice | number:'1.0-0' }}/nt</span>
+              <span class="chip-price">₹{{ h.startingPrice | number:'1.0-0' }}/nt</span>
             </div>
             <button class="chip-remove-btn" (click)="comparisonService.removeHotel(h.id)" title="Remove hotel">
               <span class="material-symbols-outlined">close</span>

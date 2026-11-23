@@ -38,7 +38,7 @@ import { HotelSummary } from '../../core/models/hotel.model';
                          id="citySearch"
                          [(ngModel)]="searchCity"
                          name="city"
-                         placeholder="e.g. London, Paris, Dubai..."
+                         placeholder="e.g. Mumbai, Varanasi, Pune..."
                          class="search-input">
                 </div>
               </div>
@@ -189,7 +189,7 @@ import { HotelSummary } from '../../core/models/hotel.model';
                 <div class="price-box">
                   <span class="price-prefix">From</span>
                   <div class="price-val">
-                    <span class="currency">$</span>
+                    <span class="currency">₹</span>
                     <span class="amount">{{ hotel.startingPrice | number:'1.0-0' }}</span>
                     <span class="unit">/ night</span>
                   </div>
@@ -742,7 +742,7 @@ export class HotelListComponent implements OnInit {
   minCheckInDate: string = '';
   minCheckOutDate: string = '';
 
-  popularCities: string[] = ['London', 'Paris', 'Dubai', 'Tokyo', 'Zurich', 'New York'];
+  popularCities: string[] = ['Mumbai', 'Varanasi', 'Pune'];
 
   ngOnInit(): void {
     const today = new Date();

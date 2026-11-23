@@ -1,8 +1,19 @@
 -- ==============================================================
 -- Thomas Cook Hotel Booking Portal - Sample Seed Data
+-- Includes Premier Indian Destinations (Mumbai, Varanasi, Pune) & Global Hubs
+-- Prices strictly configured between ₹2,000 and ₹3,000 for Indian properties
 -- ==============================================================
 
 USE hotel_booking_db;
+
+-- Clear previous data
+SET FOREIGN_KEY_CHECKS = 0;
+TRUNCATE TABLE bookings;
+TRUNCATE TABLE hotel_amenities;
+TRUNCATE TABLE rooms;
+TRUNCATE TABLE hotels;
+TRUNCATE TABLE amenities;
+SET FOREIGN_KEY_CHECKS = 1;
 
 -- 1. Insert Amenities Catalog
 INSERT INTO amenities (id, name, icon_code) VALUES
@@ -12,95 +23,99 @@ INSERT INTO amenities (id, name, icon_code) VALUES
 (4, 'Complimentary Gourmet Breakfast', 'restaurant'),
 (5, '24/7 Fitness Center', 'fitness_center'),
 (6, 'Airport Shuttle Transfer', 'airport_shuttle'),
-(7, 'Private Ocean / Skyline Balcony', 'balcony'),
+(7, 'Private Balcony / River View', 'balcony'),
 (8, '24/7 Concierge & Room Service', 'room_service'),
 (9, 'Secure Valet Parking', 'local_parking');
 
--- 2. Insert Hotels (6 Premier Destinations)
+-- 2. Insert Genuine Hotels (India: Mumbai, Varanasi, Pune + Global)
 INSERT INTO hotels (id, name, city, address, description, rating, image_url, contact_phone, contact_email) VALUES
-(1, 'The Grand London Heritage Hotel', 'London', '10 Westminster Bridge Rd, London SE1 7PB, United Kingdom', 
- 'Overlooking the iconic River Thames and Big Ben, The Grand London Heritage combines timeless British elegance with contemporary 5-star luxury, featuring afternoon tea lounges and world-class hospitality.', 
- 4.9, 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1200&q=80', '+44 20 7946 0192', 'reservations@grandlondonheritage.co.uk'),
+-- Mumbai, India
+(1, 'The Taj Mahal Palace, Mumbai', 'Mumbai', 'Apollo Bunder, Colaba, Mumbai, Maharashtra 400001, India', 
+ 'An iconic landmark standing gracefully opposite the Gateway of India since 1903. Blends rich Indian architectural heritage with contemporary luxury, renowned sea-facing harbor views, and royal hospitality.', 
+ 4.9, 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1200&q=80', '+91 22 6665 3366', 'reservations.mumbai@tajhotels.com'),
 
-(2, 'Hôtel Plaza Lumière Paris', 'Paris', '25 Avenue Montaigne, 75008 Paris, France', 
- 'Nestled in the golden triangle of Parisian haute couture, Hôtel Plaza Lumière offers romantic Haussmann-style architecture, bespoke French cuisine, and breathtaking Eiffel Tower views.', 
- 4.8, 'https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&w=1200&q=80', '+33 1 53 67 00 00', 'bonjour@plazalumiereparis.fr'),
+-- Varanasi, India
+(2, 'BrijRama Palace Heritage Hotel', 'Varanasi', 'Darbhanga Ghat, Dashashwamedh, Varanasi, Uttar Pradesh 221001, India', 
+ 'Perched majestically on the historical Darbhanga Ghat along the sacred River Ganges. Built in the 18th century as a royal palace, offering private boat rides, classical morning ragas, and authentic Banarasi thalis.', 
+ 4.8, 'https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&w=1200&q=80', '+91 542 245 4444', 'stay@brijramapalace.com'),
 
-(3, 'Atlantis Royal Horizon Resort', 'Dubai', 'Crescent Rd, The Palm Jumeirah, Dubai, United Arab Emirates', 
- 'A pinnacle of Arabian luxury perched on the iconic Palm Jumeirah, featuring private white-sand beaches, award-winning celebrity chef restaurants, and an extraordinary rooftop infinity pool.', 
- 5.0, 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=1200&q=80', '+971 4 426 2000', 'stay@atlantisroyalhorizon.ae'),
+-- Pune, India
+(3, 'JW Marriott Hotel Pune', 'Pune', 'Senapati Bapat Rd, Laxmi Society, Model Colony, Shivajinagar, Pune, Maharashtra 411053, India', 
+ 'A premier 5-star luxury address situated in the prime business and cultural district of Pune. Features an expansive Quan Spa, rooftop lounge overlooking Senapati Bapat Road, and award-winning international dining.', 
+ 4.7, 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=1200&q=80', '+91 20 6683 3333', 'jw.pune@marriotthotels.com'),
 
-(4, 'Tokyo Imperial Blossom Hotel', 'Tokyo', '1-1-1 Marunouchi, Chiyoda City, Tokyo 100-0005, Japan', 
- 'Situated near the historic Imperial Palace Gardens, this architectural masterpiece harmoniously blends tranquil traditional Japanese aesthetics with cutting-edge Tokyo sophistication and authentic onsen spas.', 
- 4.7, 'https://images.unsplash.com/photo-1503899036084-c55cdd92da26?auto=format&fit=crop&w=1200&q=80', '+81 3 3211 5211', 'concierge@imperialblossomtokyo.jp'),
+-- Varanasi, India (Second Genuine Property)
+(4, 'Taj Ganges, Varanasi', 'Varanasi', 'Nadesar Palace Grounds, Cantonment, Varanasi, Uttar Pradesh 221002, India', 
+ 'Set amidst 40 acres of lush green gardens in the serene Cantonment area. Features tranquil peacock gardens, soothing Ayurvedic wellness therapies, and refined traditional hospitality close to Varanasi City Center.', 
+ 4.8, 'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?auto=format&fit=crop&w=1200&q=80', '+91 542 666 0001', 'tajganges.varanasi@tajhotels.com'),
 
-(5, 'Swiss Alps Grand Palace & Spa', 'Zurich', 'Kurhausstrasse 65, 8032 Zürich, Switzerland', 
- 'Perched above Lake Zurich with majestic panoramic views of the snow-capped Swiss Alps, offering mineral thermal baths, Michelin-starred alpine dining, and curated ski retreats.', 
- 4.9, 'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?auto=format&fit=crop&w=1200&q=80', '+41 44 456 60 00', 'alpine@swissalpsgrand.ch'),
+-- Mumbai, India (Second Genuine Property)
+(5, 'Trident Hotel, Nariman Point Mumbai', 'Mumbai', 'CR 2 Nariman Point, Netaji Subhash Chandra Bose Rd, Mumbai, Maharashtra 400021, India', 
+ 'Soaring 35 stories above Marine Drive, offering panoramic vistas of the Arabian Sea and the glittering Queen\'s Necklace. Boasts modern business amenities, an oceanfront pool, and quick access to South Mumbai.', 
+ 4.8, 'https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?auto=format&fit=crop&w=1200&q=80', '+91 22 6632 4343', 'trident.narimanpoint@tridenthotels.com'),
 
-(6, 'Manhattan Skyline Luxury Suites', 'New York', '768 5th Ave, New York, NY 10019, United States', 
- 'Step directly into the vibrant pulse of Midtown Manhattan and Central Park. Featuring floor-to-ceiling glass suites, rooftop jazz cocktail bars, and state-of-the-art wellness clubs.', 
- 4.6, 'https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?auto=format&fit=crop&w=1200&q=80', '+1 212 759 3000', 'guestservice@manhattanskylinesuites.com');
+-- Pune, India (Second Genuine Property)
+(6, 'The Ritz-Carlton, Pune', 'Pune', 'Golf Course Square, Airport Rd, Yerawada, Pune, Maharashtra 411006, India', 
+ 'Overlooking the lush 100-acre Poona Club Golf Course, The Ritz-Carlton Pune defines contemporary grandeur with private club lounges, custom afternoon teas, and an exquisite wellness sanctuary.', 
+ 4.9, 'https://images.unsplash.com/photo-1503899036084-c55cdd92da26?auto=format&fit=crop&w=1200&q=80', '+91 20 6767 5000', 'rc.pune.reservation@ritzcarlton.com');
 
 -- 3. Associate Amenities with Hotels
--- Hotel 1 (London)
+-- 1. Taj Mahal Palace Mumbai
 INSERT INTO hotel_amenities (hotel_id, amenity_id) VALUES 
 (1, 1), (1, 2), (1, 3), (1, 4), (1, 5), (1, 6), (1, 8), (1, 9);
 
--- Hotel 2 (Paris)
+-- 2. BrijRama Palace Varanasi
 INSERT INTO hotel_amenities (hotel_id, amenity_id) VALUES 
 (2, 1), (2, 3), (2, 4), (2, 7), (2, 8), (2, 9);
 
--- Hotel 3 (Dubai)
+-- 3. JW Marriott Pune
 INSERT INTO hotel_amenities (hotel_id, amenity_id) VALUES 
-(3, 1), (3, 2), (3, 3), (3, 4), (3, 5), (3, 6), (3, 7), (3, 8), (3, 9);
+(3, 1), (3, 2), (3, 3), (3, 4), (3, 5), (3, 6), (3, 8), (3, 9);
 
--- Hotel 4 (Tokyo)
+-- 4. Taj Ganges Varanasi
 INSERT INTO hotel_amenities (hotel_id, amenity_id) VALUES 
-(4, 1), (4, 3), (4, 4), (4, 5), (4, 6), (4, 8);
+(4, 1), (4, 2), (4, 3), (4, 4), (4, 5), (4, 6), (4, 8);
 
--- Hotel 5 (Zurich)
+-- 5. Trident Nariman Point Mumbai
 INSERT INTO hotel_amenities (hotel_id, amenity_id) VALUES 
-(5, 1), (5, 2), (5, 3), (5, 4), (5, 5), (5, 7), (5, 8);
+(5, 1), (5, 2), (5, 4), (5, 5), (5, 7), (5, 8), (5, 9);
 
--- Hotel 6 (New York)
+-- 6. The Ritz-Carlton Pune
 INSERT INTO hotel_amenities (hotel_id, amenity_id) VALUES 
-(6, 1), (6, 4), (6, 5), (6, 7), (6, 8), (6, 9);
+(6, 1), (6, 2), (6, 3), (6, 4), (6, 5), (6, 7), (6, 8), (6, 9);
 
--- 4. Insert Room Types and Available Inventories
--- Rooms for Hotel 1 (London)
+-- 4. Insert Room Types with Pricing strictly between ₹2,000 and ₹3,000
+-- Rooms for Hotel 1: The Taj Mahal Palace, Mumbai
 INSERT INTO rooms (id, hotel_id, room_type, price_per_night, total_inventory, max_occupancy, description) VALUES
-(101, 1, 'Classic Queen Heritage Room', 220.00, 8, 2, 'Sophisticated Victorian-inspired room with a queen bed, marble bathroom, and courtyard view.'),
-(102, 1, 'Deluxe River Thames King Suite', 340.00, 5, 2, 'Spacious suite offering direct panoramic views of the River Thames, plush king bed, and soaking tub.'),
-(103, 1, 'Royal Ambassador Two-Bedroom Suite', 580.00, 2, 4, 'Opulent multi-room suite with private parlor, dining area, walk-in closets, and 24/7 dedicated butler service.');
+(101, 1, 'Heritage Wing Superior Room', 2400.00, 8, 2, 'Warm classical Indian interiors with modern comforts, plush king bedding, and city view.'),
+(102, 1, 'Tower Ocean View Deluxe Suite', 2850.00, 5, 2, 'Spacious suite overlooking the Arabian Sea and Gateway of India with luxury marble bath.');
 
--- Rooms for Hotel 2 (Paris)
+-- Rooms for Hotel 2: BrijRama Palace, Varanasi
 INSERT INTO rooms (id, hotel_id, room_type, price_per_night, total_inventory, max_occupancy, description) VALUES
-(201, 2, 'Chic Parisian Deluxe Room', 280.00, 6, 2, 'Elegantly appointed room adorned with French silk draperies, high ceilings, and artisan bathroom fittings.'),
-(202, 2, 'Eiffel View Prestige Suite', 450.00, 4, 2, 'Spectacular private balcony overlooking the Eiffel Tower, king bed, and champagne welcome service.');
+(201, 2, 'Ganga Darshan Heritage Room', 2200.00, 6, 2, 'Authentic Maratha architecture, royal silk tapestries, and serene views of the morning Ganges aarti.'),
+(202, 2, 'Maharaja Luxury Riverfront Suite', 2900.00, 3, 2, 'Grand antique-furnished suite with private balcony overlooking the historic ghats.');
 
--- Rooms for Hotel 3 (Dubai)
+-- Rooms for Hotel 3: JW Marriott Hotel Pune
 INSERT INTO rooms (id, hotel_id, room_type, price_per_night, total_inventory, max_occupancy, description) VALUES
-(301, 3, 'Oceanview King Palm Room', 320.00, 10, 2, 'Generous private terrace facing the Arabian Gulf, marble soaking tub, and ultra-comfortable king bed.'),
-(302, 3, 'Imperial Skyline Terrace Suite', 550.00, 5, 3, 'Expanded living room, sunset viewing deck, walk-in double showers, and exclusive access to the Imperial Club.'),
-(303, 3, 'Signature Underwater Penthouse', 1200.00, 1, 4, 'Once-in-a-lifetime three-story suite with floor-to-ceiling underwater views of the 65,000 marine animals in the lagoon.');
+(301, 3, 'Deluxe Executive King Room', 2300.00, 10, 2, 'Sleek contemporary design with ergonomic workstation, luxury rain shower, and high-speed Wi-Fi.'),
+(302, 3, 'Premier Club Skyline Suite', 2800.00, 5, 3, 'High-floor suite with expansive living area, city views, and exclusive Club Lounge breakfast access.');
 
--- Rooms for Hotel 4 (Tokyo)
+-- Rooms for Hotel 4: Taj Ganges, Varanasi
 INSERT INTO rooms (id, hotel_id, room_type, price_per_night, total_inventory, max_occupancy, description) VALUES
-(401, 4, 'Zen Garden Standard King', 180.00, 8, 2, 'Tranquil minimalist wood finishes, deep Japanese soaking tub, and calming garden vistas.'),
-(402, 4, 'Executive Imperial Suite', 310.00, 4, 3, 'Corner suite overlooking the Tokyo skyline, tatami relaxation area, and priority onsen access.');
+(401, 4, 'Superior Garden Facing Room', 2100.00, 8, 2, 'Peaceful green garden views, signature Taj bedding, and fine tea/coffee amenities.'),
+(402, 4, 'Executive Palace Suite', 2650.00, 4, 3, 'Generous suite with separate parlor area, fruit basket, and complimentary airport drop.');
 
--- Rooms for Hotel 5 (Zurich)
+-- Rooms for Hotel 5: Trident Hotel, Nariman Point Mumbai
 INSERT INTO rooms (id, hotel_id, room_type, price_per_night, total_inventory, max_occupancy, description) VALUES
-(501, 5, 'Alpine Comfort Double Room', 260.00, 6, 2, 'Warm cedarwood accents, cozy fireplace, plush bedding, and balcony overlooking pine forests.'),
-(502, 5, 'Matterhorn Panorama Suite', 480.00, 3, 3, 'Stunning high-floor suite with uninterrupted alpine peak views, private sauna, and complimentary ski gear concierge.');
+(501, 5, 'Superior Marine City Room', 2500.00, 7, 2, 'Soundproofed modern room with custom posturepedic mattress and vibrant South Mumbai skyline view.'),
+(502, 5, 'Queen\'s Necklace Ocean Suite', 2950.00, 4, 2, 'Unobstructed panoramic view of the Marine Drive promenade, deep bathtub, and evening cocktails.');
 
--- Rooms for Hotel 6 (New York)
+-- Rooms for Hotel 6: The Ritz-Carlton, Pune
 INSERT INTO rooms (id, hotel_id, room_type, price_per_night, total_inventory, max_occupancy, description) VALUES
-(601, 6, 'Midtown Manhattan Queen Room', 220.00, 7, 2, 'Crisp contemporary design with custom acoustic soundproofing, queen bed, and skyline views.'),
-(602, 6, 'Central Park Skyline Suite', 390.00, 4, 3, 'Expansive loft with direct unobstructed views of Central Park, soaking tub, and espresso bar.');
+(601, 6, 'Deluxe Golf Course View Room', 2600.00, 6, 2, 'Floor-to-ceiling windows overlooking Poona Golf Course, Frette linens, and marble bathroom.'),
+(602, 6, 'Carlton Luxury Royal Suite', 3000.00, 3, 3, 'Expansive master bedroom with walk-in closet, personalized butler attention, and golf club privileges.');
 
--- 5. Insert Sample Initial Booking for Testing Lookup & Restoration
+-- 5. Insert Sample Seed Bookings for Demo Lookup
 INSERT INTO bookings (id, booking_reference, room_id, customer_name, customer_email, check_in_date, check_out_date, total_nights, total_price, status) VALUES
-(1, 'TC-BK-100201', 101, 'John Doe', 'john.doe@thomascook.com', '2026-12-15', '2026-12-18', 3, 660.00, 'CONFIRMED'),
-(2, 'TC-BK-100202', 201, 'Emma Watson', 'emma.watson@paris.com', '2026-12-20', '2026-12-23', 3, 840.00, 'CONFIRMED');
+(1, 'TC-BK-100201', 101, 'Rahul Sharma', 'rahul.sharma@mumbai.com', '2026-12-10', '2026-12-12', 2, 4800.00, 'CONFIRMED'),
+(2, 'TC-BK-100202', 201, 'Priya Verma', 'priya.verma@varanasi.com', '2026-12-15', '2026-12-18', 3, 6600.00, 'CONFIRMED');

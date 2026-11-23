@@ -70,7 +70,7 @@ import { HotelComparison } from '../../core/models/hotel.model';
                   <td *ngFor="let h of hotels" class="data-cell">
                     <div class="price-stack">
                       <div class="price-val">
-                        <span class="currency">$</span>
+                        <span class="currency">₹</span>
                         <span class="amount">{{ h.startingPrice | number:'1.0-0' }}</span>
                         <span class="unit">/ night</span>
                       </div>
