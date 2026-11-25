@@ -1,12 +1,12 @@
-# 🏨 Thomas Cook — Luxury Hotel Booking Portal
+#Thomas Cook — Luxury Hotel Booking Portal
 
 > **Full-Stack Developer Internship Assessment Project**  
 > Engineered with **Angular 19**, **Java Spring Boot 3**, and **MySQL 8.0**.  
 > Features thread-safe pessimistic locking for simultaneous booking prevention, instant inventory restoration upon cancellation, and a side-by-side **Hotel Comparison** surprise feature.
 
----
 
-## 🌟 Key Highlights & Assessment Requirements Coverage
+
+# Key Highlights & Assessment Requirements Coverage
 
 | Requirement | Implementation Detail | Status |
 |---|---|:---:|
@@ -24,9 +24,7 @@
 | **12. Safe simultaneous booking handling** | Thread-safe `@Transactional(isolation = Isolation.READ_COMMITTED)` + **Pessimistic Write Lock** (`SELECT ... FOR UPDATE`) on the `Room` entity row. | ✅ |
 | **Surprise Feature: Hotel Comparison** | Interactive floating comparison tray and full modal matrix comparing up to 3 hotels across price, location, ratings, room types, and amenities. | ✅ |
 
----
-
-## 🏛️ System Architecture
+#System Architecture
 
 ```mermaid
 graph TD
@@ -61,9 +59,7 @@ graph TD
     Services -- "HTTP REST (JSON)" --> Controllers
 ```
 
----
-
-## ⚡ Concurrency & Race Condition Handling Strategy
+#Concurrency & Race Condition Handling Strategy
 
 When two travelers attempt to book the last remaining room at the exact same millisecond:
 
@@ -87,16 +83,13 @@ User B: Acquires Lock ──► Reads inventory: 0 available ──► Throws Ro
      $$\text{Available Rooms} = \text{room.totalInventory} - \text{COUNT}(\text{overlapping active bookings})$$
    - Cancellation simply changes status to `CANCELLED`. The room is immediately and safely available again.
 
----
-
-## 🚀 Quick Start Guide
+# Quick Start Guide
 
 ### Prerequisites
 - **Java**: JDK 17, 21, or 25
 - **Node.js**: v18+ or v20+ (Node 24 supported)
 - **Database**: MySQL Server 8.0+ running on port `3306`
 
----
 
 ### Step 1: Initialize Database
 Open MySQL Workbench, MySQL CLI, or your preferred SQL editor:
@@ -112,7 +105,6 @@ mysql -u root -p hotel_booking_db < database/data.sql
 ```
 *(Default credentials in `backend/src/main/resources/application.properties` are `root` / `root`. Update if your local MySQL password differs).*
 
----
 
 ### Step 2: Start the Java Spring Boot Backend
 ```bash
@@ -123,7 +115,6 @@ mvn spring-boot:run
 ```
 The REST API will launch on **`http://localhost:8080`**.
 
----
 
 ### Step 3: Start the Angular Frontend
 ```bash
@@ -133,9 +124,8 @@ npm start
 ```
 The portal will launch on **`http://localhost:4200`**.
 
----
 
-## 🧪 Running Automated Tests
+# Running Automated Tests
 
 A comprehensive test suite of **18 unit and integration tests** is included using **JUnit 5** and **Mockito**:
 
@@ -160,9 +150,9 @@ mvn test
 - **`BookingControllerTest`**:
   - MockMvc HTTP tests verifying status codes (`201 Created`, `400 Bad Request`, `404 Not Found`, `409 Conflict`).
 
----
 
-## 📡 REST API Reference
+
+#REST API Reference
 
 | Method | Endpoint | Query / Body Params | Response Description |
 |---|---|---|---|
@@ -175,7 +165,7 @@ mvn test
 
 ---
 
-## 👥 Demo Walkthrough & Sample Data
+#Demo Walkthrough & Sample Data
 
 For quick evaluation, sample bookings are pre-seeded in the database:
 
