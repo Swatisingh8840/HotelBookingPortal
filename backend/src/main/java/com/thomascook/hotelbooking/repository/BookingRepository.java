@@ -33,4 +33,14 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     Optional<Booking> findByBookingReferenceAndCustomerEmailIgnoreCase(String bookingReference, String customerEmail);
 
     Optional<Booking> findByBookingReference(String bookingReference);
+
+    long countByStatus(BookingStatus status);
+
+    @Query("SELECT COALESCE(SUM(b.totalPrice), 0) FROM Booking b WHERE b.status = :status")
+    java.math.BigDecimal sumTotalPriceByStatus(@Param("status") BookingStatus status);
+
+    java.util.List<Booking> findTop10ByOrderByCreatedAtDesc();
+
+    @Query("SELECT b.room.hotel.city, COUNT(b) FROM Booking b WHERE b.status = 'CONFIRMED' GROUP BY b.room.hotel.city")
+    java.util.List<Object[]> countBookingsByCity();
 }

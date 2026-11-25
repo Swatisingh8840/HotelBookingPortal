@@ -1,8 +1,9 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { BookingService } from '../../core/services/booking.service';
+import { ToastService } from '../../core/services/toast.service';
 import { BookingResponse } from '../../core/models/hotel.model';
 
 @Component({
@@ -13,11 +14,11 @@ import { BookingResponse } from '../../core/models/hotel.model';
     <div class="manage-booking-page">
       
       <!-- Header Banner -->
-      <section class="manage-hero">
+      <section class="manage-hero no-print">
         <div class="container">
           <h1 class="page-title">Manage Your Reservation</h1>
           <p class="page-subtitle">
-            Retrieve, review, or cancel your hotel reservations anytime using your unique booking reference and email.
+            Retrieve, review, print vouchers, or cancel hotel reservations anytime using your unique booking reference and email.
           </p>
 
           <!-- Search Form Card -->
@@ -47,7 +48,7 @@ import { BookingResponse } from '../../core/models/hotel.model';
                          [(ngModel)]="searchEmail"
                          required
                          email
-                         placeholder="e.g. john.doe@thomascook.com"
+                         placeholder="e.g. rahul.sharma@mumbai.com"
                          class="lookup-input">
                 </div>
               </div>
@@ -70,24 +71,15 @@ import { BookingResponse } from '../../core/models/hotel.model';
       <section class="container result-section">
         
         <!-- Error Alert -->
-        <div *ngIf="errorMessage" class="alert-box alert-error animate-fade-in">
+        <div *ngIf="errorMessage" class="alert-box alert-error animate-fade-in no-print">
           <span class="material-symbols-outlined">error</span>
           <div class="alert-text">
             <strong>Reservation Not Found:</strong> {{ errorMessage }}
           </div>
         </div>
 
-        <!-- Success Cancel Alert -->
-        <div *ngIf="cancellationSuccess" class="alert-box alert-success animate-fade-in">
-          <span class="material-symbols-outlined">check_circle</span>
-          <div class="alert-text">
-            <strong>Booking Cancelled Successfully!</strong>
-            Your reservation has been cancelled, and the room availability has been instantly restored for other travelers.
-          </div>
-        </div>
-
         <!-- Initial Helper Prompt -->
-        <div *ngIf="!booking && !errorMessage && !isLoading" class="empty-prompt-card">
+        <div *ngIf="!booking && !errorMessage && !isLoading" class="empty-prompt-card no-print">
           <div class="prompt-icon-wrap">
             <span class="material-symbols-outlined">receipt_long</span>
           </div>
@@ -96,7 +88,7 @@ import { BookingResponse } from '../../core/models/hotel.model';
             Enter your booking reference code (found in your confirmation voucher or booking screen) along with the email address used during checkout.
           </p>
           <div class="demo-hints">
-            <span class="hint-label">Sample Seed Bookings for Demo:</span>
+            <span class="hint-label">Sample Pre-Loaded Bookings for Evaluation:</span>
             <div class="hint-chips">
               <button class="hint-chip" (click)="fillDemo('TC-BK-100201', 'rahul.sharma@mumbai.com')">
                 Mumbai: TC-BK-100201 (rahul.sharma&#64;mumbai.com)
@@ -108,23 +100,40 @@ import { BookingResponse } from '../../core/models/hotel.model';
           </div>
         </div>
 
-        <!-- Booking Details Card -->
-        <div *ngIf="booking" class="booking-voucher-card animate-fade-in">
+        <!-- Luxury Booking Voucher Card -->
+        <div *ngIf="booking" class="booking-voucher-card animate-fade-in printable-area">
           
+          <!-- Voucher Official Header -->
+          <div class="voucher-brand-header">
+            <div class="brand-badge-group">
+              <div class="tc-logo-badge">TC</div>
+              <div>
+                <span class="tc-brand-title">Thomas Cook</span>
+                <span class="tc-brand-sub">Official Accommodation Voucher</span>
+              </div>
+            </div>
+            
+            <div class="status-pill-wrap">
+              <div class="status-pill"
+                   [class.status-confirmed]="booking.status === 'CONFIRMED'"
+                   [class.status-cancelled]="booking.status === 'CANCELLED'">
+                <span class="material-symbols-outlined">
+                  {{ booking.status === 'CONFIRMED' ? 'verified' : 'cancel' }}
+                </span>
+                <span>{{ booking.status }}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Voucher Top Bar -->
           <div class="voucher-top-bar">
             <div class="voucher-id-stack">
               <span class="top-tag">Booking Reference</span>
               <span class="booking-ref-title">{{ booking.bookingReference }}</span>
             </div>
-
-            <!-- Status Badge -->
-            <div class="status-pill"
-                 [class.status-confirmed]="booking.status === 'CONFIRMED'"
-                 [class.status-cancelled]="booking.status === 'CANCELLED'">
-              <span class="material-symbols-outlined">
-                {{ booking.status === 'CONFIRMED' ? 'verified' : 'cancel' }}
-              </span>
-              <span>{{ booking.status }}</span>
+            <div class="voucher-issue-date">
+              <span class="top-tag">Status</span>
+              <span class="issue-val">{{ booking.status === 'CONFIRMED' ? 'Guaranteed Reservation' : 'Cancelled & Restored' }}</span>
             </div>
           </div>
 
@@ -142,7 +151,7 @@ import { BookingResponse } from '../../core/models/hotel.model';
               </div>
 
               <div class="info-group">
-                <span class="group-label">Selected Suite</span>
+                <span class="group-label">Reserved Suite</span>
                 <p class="room-type-text">{{ booking.roomType }}</p>
               </div>
 
@@ -150,6 +159,7 @@ import { BookingResponse } from '../../core/models/hotel.model';
                 <div class="date-box">
                   <span class="d-label">Check-in</span>
                   <span class="d-val">{{ booking.checkInDate }}</span>
+                  <span class="d-sub">From 14:00 hrs</span>
                 </div>
                 <div class="d-arrow">
                   <span class="material-symbols-outlined">arrow_forward</span>
@@ -158,14 +168,49 @@ import { BookingResponse } from '../../core/models/hotel.model';
                 <div class="date-box">
                   <span class="d-label">Check-out</span>
                   <span class="d-val">{{ booking.checkOutDate }}</span>
+                  <span class="d-sub">Until 12:00 hrs</span>
                 </div>
               </div>
+
+              <!-- Barcode & QR Code Simulation -->
+              <div class="security-strip">
+                <div class="barcode-visual">
+                  <div class="barcode-lines"></div>
+                  <span class="barcode-text">* {{ booking.bookingReference }} *</span>
+                </div>
+
+                <div class="qr-code-box">
+                  <svg viewBox="0 0 100 100" class="qr-svg">
+                    <rect width="100" height="100" fill="#ffffff"/>
+                    <rect x="10" y="10" width="25" height="25" fill="#003366"/>
+                    <rect x="15" y="15" width="15" height="15" fill="#ffffff"/>
+                    <rect x="18" y="18" width="9" height="9" fill="#003366"/>
+                    
+                    <rect x="65" y="10" width="25" height="25" fill="#003366"/>
+                    <rect x="70" y="15" width="15" height="15" fill="#ffffff"/>
+                    <rect x="73" y="18" width="9" height="9" fill="#003366"/>
+
+                    <rect x="10" y="65" width="25" height="25" fill="#003366"/>
+                    <rect x="15" y="70" width="15" height="15" fill="#ffffff"/>
+                    <rect x="18" y="73" width="9" height="9" fill="#003366"/>
+
+                    <rect x="42" y="15" width="6" height="20" fill="#003366"/>
+                    <rect x="52" y="10" width="6" height="15" fill="#003366"/>
+                    <rect x="40" y="45" width="20" height="10" fill="#003366"/>
+                    <rect x="65" y="45" width="10" height="20" fill="#003366"/>
+                    <rect x="45" y="65" width="15" height="20" fill="#003366"/>
+                    <rect x="65" y="70" width="20" height="15" fill="#003366"/>
+                  </svg>
+                  <span class="qr-label">Scan to Verify</span>
+                </div>
+              </div>
+
             </div>
 
             <!-- Right Info (Pricing & Actions) -->
             <div class="voucher-side-col">
               <div class="guest-box">
-                <span class="group-label">Primary Guest</span>
+                <span class="group-label">Guest Details</span>
                 <p class="guest-name">{{ booking.customerName }}</p>
                 <p class="guest-email">{{ booking.customerEmail }}</p>
               </div>
@@ -175,6 +220,14 @@ import { BookingResponse } from '../../core/models/hotel.model';
                   <span>Rate per night:</span>
                   <span>₹{{ booking.pricePerNight | number:'1.2-2' }}</span>
                 </div>
+                <div class="rate-line">
+                  <span>Duration:</span>
+                  <span>{{ booking.totalNights }} {{ booking.totalNights === 1 ? 'night' : 'nights' }}</span>
+                </div>
+                <div class="rate-line">
+                  <span>Taxes & Service Fees:</span>
+                  <span class="free-tag">Included</span>
+                </div>
                 <div class="total-line">
                   <span>Total Amount:</span>
                   <span class="total-val">₹{{ booking.totalPrice | number:'1.2-2' }}</span>
@@ -182,19 +235,18 @@ import { BookingResponse } from '../../core/models/hotel.model';
               </div>
 
               <!-- Cancellation & Actions -->
-              <div class="action-dock">
+              <div class="action-dock no-print">
                 <button class="btn btn-print" (click)="printVoucher()">
                   <span class="material-symbols-outlined">print</span>
-                  <span>Print Voucher</span>
+                  <span>Print Official Voucher</span>
                 </button>
 
                 <!-- Cancel Button -->
                 <button *ngIf="booking.status === 'CONFIRMED'"
                         class="btn btn-cancel"
-                        [disabled]="isCancelling"
-                        (click)="confirmCancellation()">
+                        (click)="openCancelModal()">
                   <span class="material-symbols-outlined">cancel</span>
-                  <span>{{ isCancelling ? 'Cancelling...' : 'Cancel Reservation' }}</span>
+                  <span>Cancel Reservation</span>
                 </button>
 
                 <div *ngIf="booking.status === 'CANCELLED'" class="cancelled-notice">
@@ -210,6 +262,36 @@ import { BookingResponse } from '../../core/models/hotel.model';
         </div>
 
       </section>
+
+      <!-- In-App Cancellation Confirmation Modal -->
+      <div class="cancel-modal-backdrop" *ngIf="showCancelConfirmModal" (click)="closeCancelModal()">
+        <div class="cancel-modal-card animate-fade-in" (click)="$event.stopPropagation()">
+          <div class="cancel-modal-header">
+            <span class="material-symbols-outlined warn-icon">warning</span>
+            <h3>Confirm Cancellation</h3>
+          </div>
+          
+          <div class="cancel-modal-body" *ngIf="booking">
+            <p>Are you sure you want to cancel your reservation at <strong>{{ booking.hotelName }}</strong>?</p>
+            <div class="cancel-details-box">
+              <div><span>Reference:</span> <strong>{{ booking.bookingReference }}</strong></div>
+              <div><span>Stay Dates:</span> {{ booking.checkInDate }} to {{ booking.checkOutDate }}</div>
+              <div><span>Refund Status:</span> 100% Eligible (Free Cancellation)</div>
+            </div>
+            <p class="restore-hint">
+              <strong>Notice:</strong> Your room inventory will be instantly restored and made available to other travelers.
+            </p>
+          </div>
+
+          <div class="cancel-modal-footer">
+            <button class="btn btn-secondary" (click)="closeCancelModal()" [disabled]="isCancelling">Keep Reservation</button>
+            <button class="btn btn-danger-confirm" (click)="executeCancellation()" [disabled]="isCancelling">
+              <span *ngIf="!isCancelling">Yes, Cancel Booking</span>
+              <span *ngIf="isCancelling">Processing Cancellation...</span>
+            </button>
+          </div>
+        </div>
+      </div>
 
     </div>
   `,
@@ -334,12 +416,6 @@ import { BookingResponse } from '../../core/models/hotel.model';
       border: 1px solid #fecaca;
     }
 
-    .alert-success {
-      background: var(--success-bg);
-      color: var(--success-color);
-      border: 1px solid #a7f3d0;
-    }
-
     /* Empty Prompt */
     .empty-prompt-card {
       background: #ffffff;
@@ -418,36 +494,55 @@ import { BookingResponse } from '../../core/models/hotel.model';
       border-color: var(--primary-color);
     }
 
-    /* Voucher Card */
+    /* Luxury Voucher Card */
     .booking-voucher-card {
       background: #ffffff;
-      border: 1.5px solid var(--border-color);
+      border: 2px solid var(--primary-color);
       border-radius: var(--radius-lg);
-      box-shadow: var(--shadow-md);
+      box-shadow: var(--shadow-lg);
       overflow: hidden;
+      position: relative;
     }
 
-    .voucher-top-bar {
-      background: #f8fafc;
-      border-bottom: 1px solid var(--border-color);
+    .voucher-brand-header {
+      background: var(--primary-color);
+      color: #ffffff;
       padding: 18px 28px;
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
 
-    .top-tag {
-      font-size: 0.75rem;
-      text-transform: uppercase;
-      font-weight: 700;
-      color: var(--text-muted);
-      display: block;
+    .brand-badge-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
     }
 
-    .booking-ref-title {
-      font-size: 1.5rem;
-      font-weight: 800;
+    .tc-logo-badge {
+      background: var(--accent-gold);
       color: var(--primary-color);
+      font-weight: 800;
+      font-size: 1.1rem;
+      width: 40px;
+      height: 40px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .tc-brand-title {
+      font-size: 1.25rem;
+      font-weight: 800;
+      display: block;
+      line-height: 1.1;
+    }
+
+    .tc-brand-sub {
+      font-size: 0.72rem;
+      color: rgba(255, 255, 255, 0.8);
+      text-transform: uppercase;
       letter-spacing: 0.5px;
     }
 
@@ -462,15 +557,45 @@ import { BookingResponse } from '../../core/models/hotel.model';
     }
 
     .status-confirmed {
-      background: var(--success-bg);
-      color: var(--success-color);
+      background: #ecfdf5;
+      color: #065f46;
       border: 1px solid #a7f3d0;
     }
 
     .status-cancelled {
-      background: var(--danger-bg);
-      color: var(--danger-color);
+      background: #fef2f2;
+      color: #991b1b;
       border: 1px solid #fecaca;
+    }
+
+    .voucher-top-bar {
+      background: #f8fafc;
+      border-bottom: 1px solid var(--border-color);
+      padding: 16px 28px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .top-tag {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      font-weight: 700;
+      color: var(--text-muted);
+      display: block;
+    }
+
+    .booking-ref-title {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--primary-color);
+      letter-spacing: 0.5px;
+    }
+
+    .issue-val {
+      font-size: 0.92rem;
+      font-weight: 700;
+      color: var(--text-dark);
     }
 
     .voucher-grid {
@@ -483,7 +608,7 @@ import { BookingResponse } from '../../core/models/hotel.model';
     .voucher-main-col {
       display: flex;
       flex-direction: column;
-      gap: 20px;
+      gap: 18px;
     }
 
     .group-label {
@@ -496,7 +621,7 @@ import { BookingResponse } from '../../core/models/hotel.model';
     }
 
     .hotel-title-text {
-      font-size: 1.4rem;
+      font-size: 1.35rem;
       font-weight: 800;
       color: var(--primary-color);
       margin-bottom: 4px;
@@ -506,12 +631,12 @@ import { BookingResponse } from '../../core/models/hotel.model';
       display: flex;
       align-items: center;
       gap: 4px;
-      font-size: 0.9rem;
+      font-size: 0.88rem;
       color: var(--text-muted);
     }
 
     .room-type-text {
-      font-size: 1.15rem;
+      font-size: 1.1rem;
       font-weight: 700;
       color: var(--text-dark);
     }
@@ -544,6 +669,11 @@ import { BookingResponse } from '../../core/models/hotel.model';
       color: var(--primary-color);
     }
 
+    .d-sub {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+    }
+
     .d-arrow {
       display: flex;
       flex-direction: column;
@@ -559,6 +689,72 @@ import { BookingResponse } from '../../core/models/hotel.model';
       padding: 2px 8px;
       border-radius: 10px;
       margin-top: 2px;
+    }
+
+    /* Barcode & QR Code */
+    .security-strip {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-top: 1px dashed var(--border-color);
+      padding-top: 18px;
+      margin-top: 4px;
+    }
+
+    .barcode-visual {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .barcode-lines {
+      width: 170px;
+      height: 38px;
+      background: repeating-linear-gradient(
+        90deg,
+        #1e293b,
+        #1e293b 2px,
+        #ffffff 2px,
+        #ffffff 4px,
+        #1e293b 4px,
+        #1e293b 7px,
+        #ffffff 7px,
+        #ffffff 8px,
+        #1e293b 8px,
+        #1e293b 12px,
+        #ffffff 12px,
+        #ffffff 15px
+      );
+    }
+
+    .barcode-text {
+      font-family: monospace;
+      font-size: 0.72rem;
+      letter-spacing: 2px;
+      color: var(--text-dark);
+      text-align: center;
+    }
+
+    .qr-code-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .qr-svg {
+      width: 50px;
+      height: 50px;
+      border: 1px solid var(--border-color);
+      padding: 2px;
+      border-radius: 4px;
+    }
+
+    .qr-label {
+      font-size: 0.65rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      font-weight: 700;
     }
 
     .voucher-side-col {
@@ -585,21 +781,26 @@ import { BookingResponse } from '../../core/models/hotel.model';
       border: 1px solid var(--border-color);
       padding: 14px 18px;
       border-radius: var(--radius-md);
-      margin: 20px 0;
+      margin: 16px 0;
     }
 
     .rate-line {
       display: flex;
       justify-content: space-between;
-      font-size: 0.88rem;
+      font-size: 0.85rem;
       color: var(--text-muted);
       margin-bottom: 6px;
+    }
+
+    .free-tag {
+      color: var(--success-color);
+      font-weight: 700;
     }
 
     .total-line {
       display: flex;
       justify-content: space-between;
-      font-size: 1.1rem;
+      font-size: 1.15rem;
       font-weight: 800;
       border-top: 1px solid var(--border-color);
       padding-top: 8px;
@@ -629,13 +830,13 @@ import { BookingResponse } from '../../core/models/hotel.model';
     }
 
     .btn-print {
-      background: #ffffff;
-      border: 1.5px solid var(--border-color);
-      color: var(--text-dark);
+      background: var(--primary-light);
+      border: 1.5px solid var(--primary-color);
+      color: var(--primary-color);
     }
 
     .btn-print:hover {
-      background: #f1f5f9;
+      background: #dbeafe;
     }
 
     .btn-cancel {
@@ -644,7 +845,7 @@ import { BookingResponse } from '../../core/models/hotel.model';
       color: var(--danger-color);
     }
 
-    .btn-cancel:hover:not(:disabled) {
+    .btn-cancel:hover {
       background: #fee2e2;
     }
 
@@ -657,6 +858,114 @@ import { BookingResponse } from '../../core/models/hotel.model';
       padding: 10px;
       border-radius: var(--radius-md);
       font-size: 0.8rem;
+    }
+
+    /* Custom In-App Cancel Modal */
+    .cancel-modal-backdrop {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 20, 45, 0.6);
+      backdrop-filter: blur(4px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 3500;
+      padding: 1rem;
+    }
+
+    .cancel-modal-card {
+      background: #ffffff;
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-xl);
+      width: 100%;
+      max-width: 480px;
+      overflow: hidden;
+    }
+
+    .cancel-modal-header {
+      background: var(--danger-bg);
+      color: var(--danger-color);
+      padding: 18px 24px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .warn-icon {
+      font-size: 28px;
+    }
+
+    .cancel-modal-header h3 {
+      font-size: 1.15rem;
+      font-weight: 800;
+    }
+
+    .cancel-modal-body {
+      padding: 22px 24px;
+      font-size: 0.92rem;
+      color: var(--text-dark);
+      line-height: 1.5;
+    }
+
+    .cancel-details-box {
+      background: #f8fafc;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 12px 16px;
+      margin: 14px 0;
+      font-size: 0.85rem;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .restore-hint {
+      font-size: 0.82rem;
+      color: #64748b;
+    }
+
+    .cancel-modal-footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+      padding: 16px 24px;
+      background: #f8fafc;
+      border-top: 1px solid var(--border-color);
+    }
+
+    .btn-secondary {
+      background: #e2e8f0;
+      color: var(--text-dark);
+      width: auto;
+      padding: 9px 18px;
+    }
+
+    .btn-danger-confirm {
+      background: var(--danger-color);
+      color: #ffffff;
+      width: auto;
+      padding: 9px 18px;
+    }
+
+    .btn-danger-confirm:hover:not(:disabled) {
+      background: #dc2626;
+    }
+
+    /* Print Styles */
+    @media print {
+      .no-print {
+        display: none !important;
+      }
+      .printable-area {
+        border: 2px solid #000000 !important;
+        box-shadow: none !important;
+      }
+      body {
+        background: #ffffff !important;
+      }
     }
 
     @media (max-width: 768px) {
@@ -679,14 +988,15 @@ import { BookingResponse } from '../../core/models/hotel.model';
 export class ManageBookingComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private bookingService = inject(BookingService);
+  private toastService = inject(ToastService);
 
   searchReference: string = '';
   searchEmail: string = '';
   isLoading: boolean = false;
   isCancelling: boolean = false;
   errorMessage: string = '';
-  cancellationSuccess: boolean = false;
   booking: BookingResponse | null = null;
+  showCancelConfirmModal: boolean = false;
 
   ngOnInit(): void {
     this.route.queryParams.subscribe(params => {
@@ -705,12 +1015,12 @@ export class ManageBookingComponent implements OnInit {
 
     this.isLoading = true;
     this.errorMessage = '';
-    this.cancellationSuccess = false;
 
     this.bookingService.lookupBooking(this.searchReference, this.searchEmail).subscribe({
       next: (res) => {
         this.booking = res;
         this.isLoading = false;
+        this.toastService.success(`Reservation "${res.bookingReference}" retrieved.`);
       },
       error: (err) => {
         this.isLoading = false;
@@ -720,6 +1030,7 @@ export class ManageBookingComponent implements OnInit {
         } else {
           this.errorMessage = 'Could not retrieve booking details. Please try again.';
         }
+        this.toastService.error(this.errorMessage);
       }
     });
   }
@@ -730,11 +1041,16 @@ export class ManageBookingComponent implements OnInit {
     this.lookupBooking();
   }
 
-  confirmCancellation(): void {
-    if (!this.booking) return;
+  openCancelModal(): void {
+    this.showCancelConfirmModal = true;
+  }
 
-    const ok = confirm(`Are you sure you want to cancel your reservation for "${this.booking.hotelName}"?\nThis action will release your room inventory immediately.`);
-    if (!ok) return;
+  closeCancelModal(): void {
+    this.showCancelConfirmModal = false;
+  }
+
+  executeCancellation(): void {
+    if (!this.booking) return;
 
     this.isCancelling = true;
     this.errorMessage = '';
@@ -743,11 +1059,13 @@ export class ManageBookingComponent implements OnInit {
       next: (cancelled) => {
         this.isCancelling = false;
         this.booking = cancelled;
-        this.cancellationSuccess = true;
+        this.showCancelConfirmModal = false;
+        this.toastService.success('Reservation successfully cancelled. Room availability restored!');
       },
       error: (err) => {
         this.isCancelling = false;
         this.errorMessage = err.error?.message || 'Failed to cancel the booking. Please try again.';
+        this.toastService.error(this.errorMessage);
       }
     });
   }

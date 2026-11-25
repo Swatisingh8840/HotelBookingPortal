@@ -32,6 +32,19 @@ public class HotelService {
     }
 
     public List<HotelSummaryDTO> searchHotels(String city, LocalDate checkIn, LocalDate checkOut) {
+        return searchHotels(city, checkIn, checkOut, null, null, null, null, null);
+    }
+
+    public List<HotelSummaryDTO> searchHotels(
+            String city,
+            LocalDate checkIn,
+            LocalDate checkOut,
+            BigDecimal minPrice,
+            BigDecimal maxPrice,
+            BigDecimal minRating,
+            String amenity,
+            String sortBy) {
+
         List<Hotel> hotels;
         if (city != null && !city.trim().isEmpty()) {
             hotels = hotelRepository.searchByCityWithAmenities(city.trim());
@@ -39,9 +52,33 @@ public class HotelService {
             hotels = hotelRepository.findAllWithAmenities();
         }
 
-        return hotels.stream()
+        List<HotelSummaryDTO> list = hotels.stream()
                 .map(this::mapToSummaryDTO)
+                .filter(h -> {
+                    if (minPrice != null && h.getStartingPrice().compareTo(minPrice) < 0) return false;
+                    if (maxPrice != null && h.getStartingPrice().compareTo(maxPrice) > 0) return false;
+                    if (minRating != null && h.getRating().compareTo(minRating) < 0) return false;
+                    if (amenity != null && !amenity.trim().isEmpty()) {
+                        String target = amenity.trim().toLowerCase();
+                        boolean hasAmenity = h.getAmenities().stream()
+                                .anyMatch(a -> a.getName().toLowerCase().contains(target));
+                        if (!hasAmenity) return false;
+                    }
+                    return true;
+                })
                 .collect(Collectors.toList());
+
+        if ("price_asc".equalsIgnoreCase(sortBy)) {
+            list.sort(Comparator.comparing(HotelSummaryDTO::getStartingPrice));
+        } else if ("price_desc".equalsIgnoreCase(sortBy)) {
+            list.sort(Comparator.comparing(HotelSummaryDTO::getStartingPrice).reversed());
+        } else if ("rating_desc".equalsIgnoreCase(sortBy)) {
+            list.sort(Comparator.comparing(HotelSummaryDTO::getRating).reversed());
+        } else if ("name_asc".equalsIgnoreCase(sortBy)) {
+            list.sort(Comparator.comparing(HotelSummaryDTO::getName, String.CASE_INSENSITIVE_ORDER));
+        }
+
+        return list;
     }
 
     public HotelDetailDTO getHotelDetails(Long id, LocalDate checkIn, LocalDate checkOut) {

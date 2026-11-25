@@ -23,4 +23,7 @@ public interface HotelRepository extends JpaRepository<Hotel, Long> {
 
     @Query("SELECT DISTINCT h FROM Hotel h LEFT JOIN FETCH h.amenities WHERE h.id IN :ids")
     List<Hotel> findByIdInWithAmenities(@Param("ids") List<Long> ids);
+
+    @Query("SELECT h.city, COUNT(h) FROM Hotel h GROUP BY h.city")
+    List<Object[]> countHotelsByCity();
 }

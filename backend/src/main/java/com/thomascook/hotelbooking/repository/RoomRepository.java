@@ -23,4 +23,7 @@ public interface RoomRepository extends JpaRepository<Room, Long> {
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("SELECT r FROM Room r WHERE r.id = :id")
     Optional<Room> findByIdWithPessimisticLock(@Param("id") Long id);
+
+    @Query("SELECT COALESCE(SUM(r.totalInventory), 0) FROM Room r")
+    long sumTotalRoomInventory();
 }

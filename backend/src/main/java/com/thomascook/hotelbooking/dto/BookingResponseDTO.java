@@ -18,7 +18,11 @@ public class BookingResponseDTO {
     private LocalDate checkOutDate;
     private Integer totalNights;
     private BigDecimal pricePerNight;
+    private BigDecimal basePrice;
+    private BigDecimal discountAmount;
+    private BigDecimal taxAmount;
     private BigDecimal totalPrice;
+    private String promoCode;
     private String status;
     private LocalDateTime createdAt;
 
@@ -135,6 +139,38 @@ public class BookingResponseDTO {
 
     public void setTotalPrice(BigDecimal totalPrice) {
         this.totalPrice = totalPrice;
+    }
+
+    public BigDecimal getBasePrice() {
+        return basePrice;
+    }
+
+    public void setBasePrice(BigDecimal basePrice) {
+        this.basePrice = basePrice;
+    }
+
+    public BigDecimal getDiscountAmount() {
+        return discountAmount;
+    }
+
+    public void setDiscountAmount(BigDecimal discountAmount) {
+        this.discountAmount = discountAmount;
+    }
+
+    public BigDecimal getTaxAmount() {
+        return taxAmount;
+    }
+
+    public void setTaxAmount(BigDecimal taxAmount) {
+        this.taxAmount = taxAmount;
+    }
+
+    public String getPromoCode() {
+        return promoCode;
+    }
+
+    public void setPromoCode(String promoCode) {
+        this.promoCode = promoCode;
     }
 
     public String getStatus() {

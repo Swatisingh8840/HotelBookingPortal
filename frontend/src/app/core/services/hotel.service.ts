@@ -10,7 +10,16 @@ export class HotelService {
   private http = inject(HttpClient);
   private apiUrl = 'http://localhost:8080/api/v1/hotels';
 
-  searchHotels(city?: string, checkIn?: string, checkOut?: string): Observable<HotelSummary[]> {
+  searchHotels(
+    city?: string,
+    checkIn?: string,
+    checkOut?: string,
+    minPrice?: number,
+    maxPrice?: number,
+    minRating?: number,
+    amenity?: string,
+    sortBy?: string
+  ): Observable<HotelSummary[]> {
     let params = new HttpParams();
     if (city && city.trim()) {
       params = params.set('city', city.trim());
@@ -20,6 +29,21 @@ export class HotelService {
     }
     if (checkOut) {
       params = params.set('checkOut', checkOut);
+    }
+    if (minPrice != null) {
+      params = params.set('minPrice', minPrice.toString());
+    }
+    if (maxPrice != null) {
+      params = params.set('maxPrice', maxPrice.toString());
+    }
+    if (minRating != null) {
+      params = params.set('minRating', minRating.toString());
+    }
+    if (amenity && amenity.trim()) {
+      params = params.set('amenity', amenity.trim());
+    }
+    if (sortBy && sortBy.trim()) {
+      params = params.set('sortBy', sortBy.trim());
     }
 
     return this.http.get<HotelSummary[]>(this.apiUrl, { params });

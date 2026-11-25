@@ -30,6 +30,8 @@ public class CreateBookingRequest {
     @Future(message = "Check-out date must be in the future")
     private LocalDate checkOutDate;
 
+    private String promoCode;
+
     public CreateBookingRequest() {
     }
 
@@ -39,6 +41,23 @@ public class CreateBookingRequest {
         this.customerEmail = customerEmail;
         this.checkInDate = checkInDate;
         this.checkOutDate = checkOutDate;
+    }
+
+    public CreateBookingRequest(Long roomId, String customerName, String customerEmail, LocalDate checkInDate, LocalDate checkOutDate, String promoCode) {
+        this.roomId = roomId;
+        this.customerName = customerName;
+        this.customerEmail = customerEmail;
+        this.checkInDate = checkInDate;
+        this.checkOutDate = checkOutDate;
+        this.promoCode = promoCode;
+    }
+
+    public String getPromoCode() {
+        return promoCode;
+    }
+
+    public void setPromoCode(String promoCode) {
+        this.promoCode = promoCode;
     }
 
     public Long getRoomId() {

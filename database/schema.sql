@@ -62,11 +62,27 @@ CREATE TABLE bookings (
     check_in_date DATE NOT NULL,
     check_out_date DATE NOT NULL,
     total_nights INT NOT NULL,
+    base_price DECIMAL(10,2) NOT NULL DEFAULT 0.00,
+    discount_amount DECIMAL(10,2) NOT NULL DEFAULT 0.00,
+    tax_amount DECIMAL(10,2) NOT NULL DEFAULT 0.00,
     total_price DECIMAL(10,2) NOT NULL,
+    promo_code VARCHAR(50) DEFAULT NULL,
     status VARCHAR(20) NOT NULL DEFAULT 'CONFIRMED',
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (room_id) REFERENCES rooms(id),
     INDEX idx_bookings_ref_email (booking_reference, customer_email),
     INDEX idx_bookings_dates (room_id, status, check_in_date, check_out_date)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- 6. Reviews Table (Guest Ratings and Testimonials)
+CREATE TABLE reviews (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    hotel_id BIGINT NOT NULL,
+    author_name VARCHAR(150) NOT NULL,
+    rating DECIMAL(2,1) NOT NULL,
+    comment TEXT NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (hotel_id) REFERENCES hotels(id) ON DELETE CASCADE,
+    INDEX idx_reviews_hotel (hotel_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

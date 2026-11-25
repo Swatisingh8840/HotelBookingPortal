@@ -4,6 +4,7 @@ import { NavbarComponent } from './components/navbar/navbar.component';
 import { FooterComponent } from './components/footer/footer.component';
 import { ComparisonDrawerComponent } from './components/comparison-drawer/comparison-drawer.component';
 import { ComparisonModalComponent } from './components/comparison-modal/comparison-modal.component';
+import { ToastComponent } from './components/toast/toast.component';
 
 @Component({
   selector: 'app-root',
@@ -13,11 +14,13 @@ import { ComparisonModalComponent } from './components/comparison-modal/comparis
     NavbarComponent,
     FooterComponent,
     ComparisonDrawerComponent,
-    ComparisonModalComponent
+    ComparisonModalComponent,
+    ToastComponent
   ],
   template: `
     <div class="app-container">
       <app-navbar></app-navbar>
+      <app-toast></app-toast>
       <main class="main-content">
         <router-outlet></router-outlet>
       </main>
